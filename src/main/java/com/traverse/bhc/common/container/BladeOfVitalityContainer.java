@@ -4,9 +4,10 @@ import com.traverse.bhc.common.config.ConfigHandler;
 import com.traverse.bhc.common.init.RegistryHandler;
 import com.traverse.bhc.common.items.BaseHeartCanister;
 import com.traverse.bhc.common.util.InventoryUtil;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -18,9 +19,10 @@ import net.neoforged.neoforge.items.SlotItemHandler;
 
 
 import javax.annotation.Nonnull;
+import java.awt.*;
 
 public class BladeOfVitalityContainer extends AbstractContainerMenu {
-    public static final String HEART_AMOUNT = "heart_amount";
+    DataComponentType<Integer> HEART_AMOUNT_COMPONENT = DataComponentType.<Integer>builder().build();
     public ItemStackHandler itemStackHandler;
 
     public BladeOfVitalityContainer(int windowId, Inventory playerInventory, ItemStack stack) {
@@ -62,7 +64,7 @@ public class BladeOfVitalityContainer extends AbstractContainerMenu {
 
 
 
-        CompoundTag nbt = sword.getTag();
+        DataComponentType<Integer> nbt = sword.getOrDefault(HEART_AMOUNT_COMPONENT, 0);
         int[] hearts = new int[this.itemStackHandler.getSlots()];
         for (int i = 0; i < hearts.length; i++) {
             ItemStack stack = this.itemStackHandler.getStackInSlot(i);
@@ -144,6 +146,6 @@ public class BladeOfVitalityContainer extends AbstractContainerMenu {
     }
 
     private boolean stackEqualExact(ItemStack stack1, ItemStack stack2) {
-        return stack1.getItem() == stack2.getItem() && ItemStack.isSameItemSameTags(stack1, stack2);
+        return stack1.getItem() == stack2.getItem() && ItemStack.isSameItem(stack1, stack2);
     }
 }
