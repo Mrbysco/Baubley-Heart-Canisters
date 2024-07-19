@@ -7,24 +7,22 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
-import java.util.stream.Stream;
-
 public class InventoryUtil {
 
     private static final String ITEMLIST = BaubleyHeartCanisters.MODID + "_itemlist";
 
     public static ItemStackHandler createVirtualInventory(int slots, ItemStack stack) {
         ItemStackHandler handler = new ItemStackHandler(slots);
-        CompoundTag nbt = stack.hasTag() ? stack.getTag() : new CompoundTag();
-        handler.deserializeNBT(nbt.getCompound(ITEMLIST));
+//        CompoundTag nbt = stack.hasTag() ? stack.getTag() : new CompoundTag(); TODO: Figure out the inventory
+//        handler.deserializeNBT(nbt.getCompound(ITEMLIST));
 
         return handler;
     }
 
     public static void serializeInventory(ItemStackHandler itemHandler, ItemStack stack) {
-        CompoundTag nbt = stack.hasTag() ? stack.getTag() : new CompoundTag();
-        nbt.put(ITEMLIST, itemHandler.serializeNBT());
-        stack.setTag(nbt);
+//        CompoundTag nbt = stack.hasTag() ? stack.getTag() : new CompoundTag();
+//        nbt.put(ITEMLIST, itemHandler.serializeNBT());
+//        stack.setTag(nbt);
     }
 
     public static boolean hasAmulet(Player player) {

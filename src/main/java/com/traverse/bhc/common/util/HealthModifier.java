@@ -3,22 +3,23 @@ package com.traverse.bhc.common.util;
 import com.google.common.base.Preconditions;
 import com.traverse.bhc.common.BaubleyHeartCanisters;
 import com.traverse.bhc.common.config.ConfigHandler;
+import com.traverse.bhc.common.datacomponent.HeartAmount;
 import com.traverse.bhc.common.items.ItemHeartAmulet;
 import com.traverse.bhc.common.items.ItemSoulHeartAmulet;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.fml.common.Mod;
 
-import java.util.UUID;
+import java.util.Map;
 
 //@Mod.EventBusSubscriber(modid = BaubleyHeartCanisters.MODID)
 public class HealthModifier {
 
-    public static final UUID HEALTH_MODIFIER_ID = UUID.fromString("caa44aa0-9e6e-4a57-9759-d2f64abfb7d3");
+    public static final ResourceLocation HEALTH_MODIFIER_ID = ResourceLocation.fromNamespaceAndPath(BaubleyHeartCanisters.MODID, "extra_hearts");
 
     /*
     public static void onEquipCurio(CurioEquipEvent event) {
@@ -152,34 +153,34 @@ public class HealthModifier {
         AttributeInstance health = player.getAttribute(Attributes.MAX_HEALTH);
         float diff = player.getMaxHealth() - player.getHealth();
 
-        int[] hearts = new int[4];
+        Map<Integer, Integer> hearts = HeartAmount.createSizedMap(4);
 
         if (addHealth && !stack.isEmpty()) {
-            int[] amuletHearts = null;
+            Map<Integer, Integer> amuletHearts = null;
             if (stack.getItem() instanceof ItemHeartAmulet amulet) {
                 amuletHearts = amulet.getHeartCount(stack);
             } else if (stack.getItem() instanceof ItemSoulHeartAmulet amulet) {
                 amuletHearts = amulet.getHeartCount(stack);
             }
             Preconditions.checkArgument(amuletHearts != null, "amuletHearts was never initialized - is this a soul canister?");
-            for (int i = 0; i < hearts.length; i++) {
-                hearts[i] += amuletHearts[i];
+            for (int i = 0; i < hearts.size(); i++) {
+                hearts.put(i, hearts.get(i) + amuletHearts.get(i));
             }
         }
 
         int extraHearts = 0;
-        for (int i = 0; i < hearts.length; i++) {
-            extraHearts += Mth.clamp(hearts[i], 0, ConfigHandler.general.heartStackSize.get() * 2);
+        for (int i = 0; i < hearts.size(); i++) {
+            extraHearts += Mth.clamp(hearts.get(i), 0, ConfigHandler.general.heartStackSize.get() * 2);
         }
 
         AttributeModifier modifier = health.getModifier(HEALTH_MODIFIER_ID);
         if (modifier != null) {
-            if (modifier.getAmount() == extraHearts) return;
+            if (modifier.amount() == extraHearts) return;
 
             health.removeModifier(HEALTH_MODIFIER_ID);
         }
 
-        health.addPermanentModifier(new AttributeModifier(HEALTH_MODIFIER_ID, BaubleyHeartCanisters.MODID + ":extra_hearts", extraHearts, AttributeModifier.Operation.ADDITION));
+        health.addPermanentModifier(new AttributeModifier(HEALTH_MODIFIER_ID, extraHearts, AttributeModifier.Operation.ADD_VALUE));
         float amount = Mth.clamp(player.getMaxHealth() - diff, 0.0f, player.getMaxHealth());
         if (amount > 0.0F) {
             player.setHealth(amount);

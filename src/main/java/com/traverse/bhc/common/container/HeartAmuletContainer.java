@@ -1,11 +1,11 @@
 package com.traverse.bhc.common.container;
 
 import com.traverse.bhc.common.config.ConfigHandler;
+import com.traverse.bhc.common.datacomponent.HeartAmount;
 import com.traverse.bhc.common.init.RegistryHandler;
 import com.traverse.bhc.common.items.BaseHeartCanister;
 import com.traverse.bhc.common.items.ItemHeartAmulet;
 import com.traverse.bhc.common.util.InventoryUtil;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
@@ -18,6 +18,8 @@ import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
 
 import javax.annotation.Nonnull;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class HeartAmuletContainer extends AbstractContainerMenu {
 
@@ -61,16 +63,15 @@ public class HeartAmuletContainer extends AbstractContainerMenu {
         InteractionHand hand = ItemHeartAmulet.getHandForAmulet(playerIn);
         if (hand == null) return;
 
-            InventoryUtil.serializeInventory(this.itemStackHandler, playerIn.getItemInHand(hand));
+        ItemStack heldStack = playerIn.getItemInHand(hand);
+        InventoryUtil.serializeInventory(this.itemStackHandler, heldStack);
 
-        CompoundTag nbt = playerIn.getItemInHand(hand).getTag();
-        int[] hearts = new int[this.itemStackHandler.getSlots()];
-        for (int i = 0; i < hearts.length; i++) {
+        Map<Integer, Integer> hearts = new TreeMap<>();
+        for (int i = 0; i < this.itemStackHandler.getSlots(); i++) {
             ItemStack stack = this.itemStackHandler.getStackInSlot(i);
-            if (!stack.isEmpty()) hearts[i] = stack.getCount() * 2;
+            if (!stack.isEmpty()) hearts.put(i, (stack.getCount() * 2));
         }
-        nbt.putIntArray(HEART_AMOUNT, hearts);
-        playerIn.getItemInHand(hand).setTag(nbt);
+        heldStack.set(RegistryHandler.HEART_AMOUNT_COMPONENT, new HeartAmount(hearts));
 
         super.removed(playerIn);
     }
@@ -152,6 +153,6 @@ public class HeartAmuletContainer extends AbstractContainerMenu {
     }
 
     private boolean stackEqualExact(ItemStack stack1, ItemStack stack2) {
-        return stack1.getItem() == stack2.getItem() && ItemStack.isSameItemSameTags(stack1, stack2);
+        return stack1.getItem() == stack2.getItem() && ItemStack.isSameItemSameComponents(stack1, stack2);
     }
 }

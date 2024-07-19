@@ -26,7 +26,7 @@ public class ItemHeart extends BaseItem {
 
 
     @Override
-    public int getUseDuration(ItemStack stack) {
+    public int getUseDuration(ItemStack stack, LivingEntity livingEntity) {
         return 30;
     }
 

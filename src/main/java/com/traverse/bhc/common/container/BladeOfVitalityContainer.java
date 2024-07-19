@@ -1,12 +1,10 @@
 package com.traverse.bhc.common.container;
 
 import com.traverse.bhc.common.config.ConfigHandler;
+import com.traverse.bhc.common.datacomponent.HeartAmount;
 import com.traverse.bhc.common.init.RegistryHandler;
 import com.traverse.bhc.common.items.BaseHeartCanister;
 import com.traverse.bhc.common.util.InventoryUtil;
-import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.core.component.DataComponentType;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -17,12 +15,11 @@ import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
 
-
 import javax.annotation.Nonnull;
-import java.awt.*;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class BladeOfVitalityContainer extends AbstractContainerMenu {
-    DataComponentType<Integer> HEART_AMOUNT_COMPONENT = DataComponentType.<Integer>builder().build();
     public ItemStackHandler itemStackHandler;
 
     public BladeOfVitalityContainer(int windowId, Inventory playerInventory, ItemStack stack) {
@@ -64,14 +61,12 @@ public class BladeOfVitalityContainer extends AbstractContainerMenu {
 
 
 
-        DataComponentType<Integer> nbt = sword.getOrDefault(HEART_AMOUNT_COMPONENT, 0);
-        int[] hearts = new int[this.itemStackHandler.getSlots()];
-        for (int i = 0; i < hearts.length; i++) {
+        Map<Integer, Integer> hearts = new TreeMap<>();
+        for (int i = 0; i < this.itemStackHandler.getSlots(); i++) {
             ItemStack stack = this.itemStackHandler.getStackInSlot(i);
-            if (!stack.isEmpty()) hearts[i] = stack.getCount() * 2;
+            if (!stack.isEmpty()) hearts.put(i, (stack.getCount() * 2));
         }
-        nbt.putIntArray(HEART_AMOUNT, hearts);
-        sword.setTag(nbt);
+        sword.set(RegistryHandler.HEART_AMOUNT_COMPONENT, new HeartAmount(hearts));
 
         super.removed(playerIn);
     }

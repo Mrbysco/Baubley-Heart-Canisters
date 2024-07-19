@@ -10,13 +10,13 @@
       "tag": "minecraft:wool"
     },
     "S": {
-      "tag": "forge:string"
+      "tag": "c:string"
     },
     "H": {
-      "item": "bhc:yellow_heart"
+      "item": "bhc:green_heart"
     }
   },
   "result": {
-    "item": "bhc:yellow_heart_patch"
+    "item": "bhc:green_heart_patch"
   }
 }

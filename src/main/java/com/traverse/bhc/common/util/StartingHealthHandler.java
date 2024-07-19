@@ -5,12 +5,12 @@ import com.traverse.bhc.common.config.ConfigHandler;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 
 
-@Mod.EventBusSubscriber(modid = BaubleyHeartCanisters.MODID)
+@EventBusSubscriber(modid = BaubleyHeartCanisters.MODID)
 public class StartingHealthHandler {
 
     @SubscribeEvent

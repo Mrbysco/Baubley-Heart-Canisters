@@ -7,10 +7,10 @@
   ],
   "key": {
     "D": {
-      "tag": "forge:gems/diamond"
+      "tag": "c:gems/diamond"
     },
     "E": {
-      "tag": "forge:gems/emerald"
+      "tag": "c:gems/emerald"
     },
     "A" : {
       "item": "minecraft:apple"

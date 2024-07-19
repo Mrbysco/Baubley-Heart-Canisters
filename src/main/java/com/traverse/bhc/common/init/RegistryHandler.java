@@ -4,10 +4,18 @@ import com.traverse.bhc.common.BaubleyHeartCanisters;
 import com.traverse.bhc.common.container.BladeOfVitalityContainer;
 import com.traverse.bhc.common.container.HeartAmuletContainer;
 import com.traverse.bhc.common.container.SoulHeartAmuletContainer;
-import com.traverse.bhc.common.items.*;
+import com.traverse.bhc.common.datacomponent.HeartAmount;
+import com.traverse.bhc.common.items.BaseHeartCanister;
+import com.traverse.bhc.common.items.BaseItem;
+import com.traverse.bhc.common.items.ItemHeart;
+import com.traverse.bhc.common.items.ItemHeartAmulet;
+import com.traverse.bhc.common.items.ItemHeartPatch;
+import com.traverse.bhc.common.items.ItemRelicApple;
+import com.traverse.bhc.common.items.ItemSoulHeartAmulet;
 import com.traverse.bhc.common.items.tools.ItemBladeOfVitality;
 import com.traverse.bhc.common.recipes.HeartAmuletRecipe;
 import com.traverse.bhc.common.util.HeartType;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.MenuType;
@@ -24,10 +32,18 @@ import java.util.function.Supplier;
 
 public class RegistryHandler {
 
+    public static final DeferredRegister<DataComponentType<?>> DATACOMPONENTTYPES = DeferredRegister.create(Registries.DATA_COMPONENT_TYPE, BaubleyHeartCanisters.MODID);
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.createItems(BaubleyHeartCanisters.MODID);
     public static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(Registries.MENU, BaubleyHeartCanisters.MODID);
     public static final DeferredRegister<RecipeSerializer<?>> RECIPESERIALIZER = DeferredRegister.create(Registries.RECIPE_SERIALIZER, BaubleyHeartCanisters.MODID);
     public static DeferredRegister<CreativeModeTab> TAB = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, BaubleyHeartCanisters.MODID);
+
+    //Data Component Types
+    public static final Supplier<DataComponentType<HeartAmount>> HEART_AMOUNT_COMPONENT = DATACOMPONENTTYPES.register("heart_amount", () ->
+        DataComponentType.<HeartAmount>builder()
+            .persistent(HeartAmount.CODEC)
+            .networkSynchronized(HeartAmount.STREAM_CODEC)
+            .build());
 
     //Items
     public static final DeferredHolder<Item, BaseHeartCanister> RED_CANISTER = ITEMS.register("red_heart_canister", () -> new BaseHeartCanister(HeartType.RED));
@@ -60,9 +76,9 @@ public class RegistryHandler {
     public static final DeferredHolder<Item, BaseItem> SOUL_HEART_CRYSTAL = ITEMS.register("soul_heart_crystal", () -> new BaseItem());
 
     //Container
-    public static final Supplier<MenuType<HeartAmuletContainer>> HEART_AMUlET_CONTAINER = CONTAINERS.register("heart_amulet_container", () -> IMenuTypeExtension.create((windowId, inv, data) -> new HeartAmuletContainer(windowId, inv, data.readItem())));
-    public static final Supplier<MenuType<SoulHeartAmuletContainer>> SOUL_HEART_AMUlET_CONTAINER = CONTAINERS.register("soul_heart_amulet_container",  () -> IMenuTypeExtension.create((windowId, inv, data) -> new SoulHeartAmuletContainer(windowId, inv, data.readItem())));
-    public static final Supplier<MenuType<BladeOfVitalityContainer>> BLADE_OF_VITALITY_CONTAINER = CONTAINERS.register("blade_of_vitality_container",  () -> IMenuTypeExtension.create((windowId, inv, data) -> new BladeOfVitalityContainer(windowId, inv, data.readItem())));
+    public static final Supplier<MenuType<HeartAmuletContainer>> HEART_AMUlET_CONTAINER = CONTAINERS.register("heart_amulet_container", () -> IMenuTypeExtension.create((windowId, inv, data) -> new HeartAmuletContainer(windowId, inv, ItemStack.STREAM_CODEC.decode(data))));
+    public static final Supplier<MenuType<SoulHeartAmuletContainer>> SOUL_HEART_AMUlET_CONTAINER = CONTAINERS.register("soul_heart_amulet_container",  () -> IMenuTypeExtension.create((windowId, inv, data) -> new SoulHeartAmuletContainer(windowId, inv, ItemStack.STREAM_CODEC.decode(data))));
+    public static final Supplier<MenuType<BladeOfVitalityContainer>> BLADE_OF_VITALITY_CONTAINER = CONTAINERS.register("blade_of_vitality_container",  () -> IMenuTypeExtension.create((windowId, inv, data) -> new BladeOfVitalityContainer(windowId, inv, ItemStack.STREAM_CODEC.decode(data))));
 
     //Recipe Serializer
      public static final Supplier<RecipeSerializer<HeartAmuletRecipe>> HEART_AMULET_RECIPE_SERIALIZER = RECIPESERIALIZER.register("amulet_shapeless",HeartAmuletRecipe.BHCSerializer::new);

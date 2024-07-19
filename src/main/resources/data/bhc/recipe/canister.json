@@ -7,10 +7,10 @@
   ],
   "key": {
     "I": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     },
     "B": {
-      "tag": "forge:bones"
+      "tag": "c:bones"
     }
   },
   "result": {
